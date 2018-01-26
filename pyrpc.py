@@ -15,12 +15,11 @@ PAYLOAD = {
         "params": [],
         "id": 1,
 }
-HEADERS = {}
 
 
 # Functions
-def makeRequest(payload):
-    response = requests.post(URL, data=json.dumps(payload), headers=HEADERS,
+def makeRequest(payload, head={}):
+    response = requests.post(URL, data=json.dumps(payload), headers=head,
                              auth=AUTH).json()
     return response['result']
 
