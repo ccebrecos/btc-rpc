@@ -6,27 +6,50 @@ import json
 import requests
 import sys
 
+from credentials import AUTH
+
+# Constants
+URL = "http://127.0.0.1:8332"
+PAYLOAD = {
+        "method": "",
+        "params": [],
+        "id": 1,
+}
+HEADERS = {}
+
+
+# Functions
+def makeRequest(payload):
+    response = requests.post(URL, data=json.dumps(payload), headers=HEADERS,
+                             auth=AUTH).json()
+    return response['result']
+
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("You must provide the method.")
+        print("You must provide at least the method.")
         exit(1)
     else:
         method = sys.argv[1]
         params = sys.argv[2:]
 
-    url = "http://127.0.0.1:8332"
-    headers = {}
-    payload = {
-        "method": method,
-        "params": params,
-        "id": 1,
-    }
-    # Credentials
-    auth = ("","")
+    p = PAYLOAD
+    p['method'] = method
+    p['params'] = params
+
+    # Wrapper: decoderawtransaction from transaction id
+    if method == "decoderawtransaction" and len(params[0]) == 64:
+        aux = {
+            "method": "getrawtransaction",
+            "params": params,
+            "id": 1,
+        }
+        tx = makeRequest(aux)
+        p['params'] = [tx]
 
     # Request
-    response = requests.post(url, data=json.dumps(payload), headers=headers,
-                             auth=auth).json()
+    response = makeRequest(p)
 
     # Print response
-    print(response['result'])
+    print()
+    print(response)
