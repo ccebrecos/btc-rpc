@@ -2,10 +2,12 @@
 Dependencies: json-rpc
     pip install json-rpc
 """
+# Libraries
 import json
 import requests
 import sys
 
+# Relative imports
 from credentials import AUTH
 
 # Constants
